@@ -79,7 +79,7 @@ public class EnemyController : MonoBehaviour
         }
         if(collision.gameObject.tag == "Player")
         {
-            Time.timeScale = 0;
+            // Time.timeScale = 0;
             Destroy(gameObject);
         }
     }

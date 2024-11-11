@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HeroController : MonoBehaviour
 {
+    public static HeroController Instance;
     enum CharacterState
     {
         Up = 1,
@@ -26,6 +27,13 @@ public class HeroController : MonoBehaviour
     private Rigidbody2D projectilePrefab;
     private Rigidbody2D projectileInstance;
     private float projectileSpeed = 8.0f;
+
+    private void Awake()
+    {
+        if(Instance != null && Instance != this) Destroy(gameObject);
+        else Instance = this;
+    }
+
 
     // Start is called before the first frame update
     private void Start()

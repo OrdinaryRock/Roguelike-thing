@@ -27,6 +27,9 @@ public class DungeonGenerator : MonoBehaviour
         spacing.y = roomPrefab.GetComponent<SpriteRenderer>().size.y;
 
         map = new int[mapWidth, mapHeight];
+
+        GenerateRoomPath(new Vector2Int(mapWidth / 2, mapHeight / 2));
+        InstantiateRooms();
     }
 
     // Update is called once per frame
@@ -34,7 +37,6 @@ public class DungeonGenerator : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.R))
         {
-            PurgeMap();
             GenerateRoomPath(new Vector2Int(mapWidth / 2, mapHeight / 2));
             InstantiateRooms();
         }
@@ -73,8 +75,10 @@ public class DungeonGenerator : MonoBehaviour
 
     private void GenerateRoomPath(Vector2Int basis)
     {
-        Vector2Int nextDirection = new Vector2Int();
+        // Setup
+        PurgeMap();
         MarkMapAtIndex(basis);
+        Vector2Int nextDirection = new Vector2Int();
         int roomsLeftToFill = minimumRooms - 1;
         
         // Guide stuff
