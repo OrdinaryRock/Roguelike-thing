@@ -15,14 +15,19 @@ public class EnemySpawner : MonoBehaviour
     private float spawnInterval = 2f;
 
     // Start is called before the first frame update
-    void Start()
+    private void OnEnable()
     {
         InvokeRepeating(nameof(SpawnEnemy), initialSpawnDelay, spawnInterval);
     }
 
+    private void OnDisable()
+    {
+        CancelInvoke(nameof(SpawnEnemy));
+    }
+
     private void SpawnEnemy()
     {
-        Vector2 spawnPosition = new Vector2(Random.Range(2, 8), Random.Range(-4, 4));
+        Vector2 spawnPosition = (Vector2)transform.position + new Vector2(Random.Range(size.x/2, -size.x/2), Random.Range(size.y/2, -size.y/2));
         Rigidbody2D enemyInstance = Instantiate(enemyPrefab, spawnPosition, transform.rotation);
     }
 

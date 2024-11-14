@@ -13,12 +13,12 @@ public class DungeonGeneratorMK2 : MonoBehaviour
     {
         North, South, East, West
     }
-    enum RoomType
+    public enum RoomType
     {
         Start, Boss, Treasure, Normal
     }
 
-    private class RoomData
+    public class RoomData
     {
         public RoomType roomType = RoomType.Normal;
         public List<Vector2> roomConnections = new List<Vector2>();
@@ -70,6 +70,7 @@ public class DungeonGeneratorMK2 : MonoBehaviour
         GenerateRoomPath(initialCoordinates, initialRoom, false);
         InstantiateRooms();
         PushMinimapData();
+        GameManager.Instance.PushRoomMap(roomMap);
     }
 
     private void GenerateRoomPath(Vector2 actingCoordinates, RoomData actingRoom, bool isBranch)
@@ -146,6 +147,7 @@ public class DungeonGeneratorMK2 : MonoBehaviour
             roomScript.SetRoomType((int)room.roomType);
             roomScript.SetRoomCoords(roomCoordinates);
         }
+        roomMap[Vector2.zero].roomInstance.GetComponent<DungeonRoom>().SetSpawnersActive(true);
     }
 
     private void PushMinimapData()

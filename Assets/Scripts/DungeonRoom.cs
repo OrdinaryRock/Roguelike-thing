@@ -13,6 +13,8 @@ public class DungeonRoom : MonoBehaviour
     private DungeonDoor southDoor;
     [SerializeField]
     private DungeonDoor westDoor;
+    [SerializeField]
+    private List<GameObject> spawners;
 
     private Dictionary<Vector2, DungeonDoor> allDoors = new Dictionary<Vector2, DungeonDoor>();
     private Dictionary<Vector2, DungeonDoor> unlockedDoors = new Dictionary<Vector2, DungeonDoor>();
@@ -65,6 +67,14 @@ public class DungeonRoom : MonoBehaviour
             allDoors[direction].SetLocked(false);
             /* if(roomType == RoomType.Start) */ allDoors[direction].SetOpen(true);
             unlockedDoors.Add(direction, allDoors[direction]);
+        }
+    }
+
+    public void SetSpawnersActive(bool flag)
+    {
+        foreach(GameObject spawner in spawners)
+        {
+            spawner.SetActive(flag);
         }
     }
 }

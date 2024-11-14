@@ -12,6 +12,7 @@ public class Minimap : MonoBehaviour
     private GameObject hallIconTemplate;
     [SerializeField]
     private Vector2 iconSpacing = new Vector2(3,2);
+    private Vector2 roomSpacing = new Vector2(19.20f, 10.80f);
 
     private List<Vector2> roomLocations;
     private List<Vector2> hallLocations;
@@ -76,13 +77,13 @@ public class Minimap : MonoBehaviour
         {
             Vector2 roomLocation = entry.Key;
             GameObject icon = entry.Value;
-            icon.transform.position = (Vector2) transform.position + roomLocation * iconSpacing;
+            icon.transform.position = (Vector2) transform.position - ((Vector2) Camera.main.transform.position / roomSpacing * iconSpacing) + roomLocation * iconSpacing;
         }
         foreach(KeyValuePair<Vector2, GameObject> entry in hallIcons)
         {
             Vector2 hallLocation = entry.Key;
             GameObject icon = entry.Value;
-            icon.transform.position = (Vector2) transform.position + hallLocation * iconSpacing;
+            icon.transform.position = (Vector2) transform.position - ((Vector2) Camera.main.transform.position / roomSpacing * iconSpacing) + hallLocation * iconSpacing;
         }
     }
 
