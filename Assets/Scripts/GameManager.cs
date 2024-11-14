@@ -62,6 +62,11 @@ public class GameManager : MonoBehaviour
         transitionEndPosition = transform.position + (Vector3)(direction * roomSpacing);
         transitionTimeElapsed = 0f;
         transitionComplete = false;
+
+        foreach(EnemyController enemy in FindObjectsByType<EnemyController>(FindObjectsSortMode.InstanceID))
+        {
+            Destroy(enemy.gameObject);
+        }
     }
 
     public void PushRoomMap(Dictionary<Vector2, DungeonGeneratorMK2.RoomData> map)

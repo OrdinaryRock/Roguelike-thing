@@ -1,11 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour
 {
     [SerializeField]
     private float movementSpeed = 1.0f;
+    [SerializeField]
+    private Rigidbody2D projectilePrefab;
+    [SerializeField]
+    private float projectileSpeed = 1.0f;
+    [SerializeField]
+    private int maxLifePoints = 3;
+    private int lifePoints;
+    [SerializeField]
+    private Image healthBarFill;
     enum MovementState
     {
         Up = 1,
@@ -23,7 +33,11 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         InvokeRepeating(nameof(Accelerate), 2, 5.0f);
+        InvokeRepeating(nameof(FireProjectile), 1, Random.Range(1.0f,2.0f));
+
         animator = GetComponent<Animator>();
+
+        lifePoints = maxLifePoints;
     }
 
     // Update is called once per frame
@@ -35,6 +49,13 @@ public class EnemyController : MonoBehaviour
     private void Accelerate()
     {
         movementSpeed++;
+    }
+
+    private void FireProjectile()
+    {
+        Rigidbody2D projectileInstance = Instantiate(projectilePrefab, transform.position, transform.rotation);
+        Vector2 distanceToPlayer = HeroController.Instance.transform.position - transform.position;
+        projectileInstance.velocity = distanceToPlayer.normalized * projectileSpeed;
     }
 
     private void Movement()
@@ -75,12 +96,10 @@ public class EnemyController : MonoBehaviour
         if(collision.gameObject.tag == "Projectile")
         {
             Destroy(collision.gameObject);
-            Destroy(gameObject);
-        }
-        if(collision.gameObject.tag == "Player")
-        {
-            // Time.timeScale = 0;
-            Destroy(gameObject);
+
+            lifePoints--;
+            healthBarFill.fillAmount = (float) lifePoints / maxLifePoints;
+            if(lifePoints <= 0) Destroy(gameObject);
         }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HeroController : MonoBehaviour
 {
@@ -25,8 +26,15 @@ public class HeroController : MonoBehaviour
 
     [SerializeField]
     private Rigidbody2D projectilePrefab;
-    private Rigidbody2D projectileInstance;
     private float projectileSpeed = 8.0f;
+
+    [SerializeField]
+    private int maxLifePoints = 10;
+    private int lifePoints;
+    [SerializeField]
+    private Image healthBarFill;
+    [SerializeField]
+    private GameObject gameOverText;
 
     private void Awake()
     {
@@ -40,6 +48,8 @@ public class HeroController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody2D>();
+
+        lifePoints = maxLifePoints;
     }
 
     // Update is called once per frame
@@ -75,7 +85,7 @@ public class HeroController : MonoBehaviour
     {
         if(Input.GetButtonDown("Fire1"))
         {
-            projectileInstance = Instantiate(projectilePrefab, transform.position, transform.rotation);
+            Rigidbody2D projectileInstance = Instantiate(projectilePrefab, transform.position, transform.rotation);
             if(movementDirection.magnitude == 0) projectileInstance.velocity = Vector2.down * projectileSpeed;
             else projectileInstance.velocity = movementDirection.normalized * projectileSpeed;
         }
@@ -88,5 +98,31 @@ public class HeroController : MonoBehaviour
         movementDirection.Normalize();
 
         rigidBody.velocity = movementDirection * movementSpeed;
+    }
+
+    private void TakeDamage(int damagePoints)
+    {
+        lifePoints -= damagePoints;
+        healthBarFill.fillAmount = (float) lifePoints / maxLifePoints;
+        if(lifePoints <= 0)
+        {
+            gameOverText.SetActive(true);
+            Time.timeScale = 0;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        string tag = collision.gameObject.tag;
+        if(tag.Equals("EnemyProjectile"))
+        {
+            TakeDamage(1);
+            Destroy(collision.gameObject);
+        }
+        if(tag.Equals("Enemy"))
+        {
+            TakeDamage(2);
+            Destroy(collision.gameObject);
+        }
     }
 }

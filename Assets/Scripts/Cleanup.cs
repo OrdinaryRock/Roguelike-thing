@@ -6,7 +6,8 @@ public class Cleanup : MonoBehaviour
 {
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if(collision.gameObject.tag == "Projectile")
+        string tag = collision.gameObject.tag;
+        if(tag.Equals("Projectile") || tag.Equals("EnemyProjectile"))
         {
             Destroy(collision.gameObject);
         }
