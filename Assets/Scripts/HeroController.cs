@@ -36,6 +36,11 @@ public class HeroController : MonoBehaviour
     [SerializeField]
     private GameObject gameOverText;
 
+    [SerializeField] private AudioClip shootSound;
+    [SerializeField] private AudioClip hurtSound;
+    [SerializeField] private AudioClip deathSound;
+    [SerializeField] private AudioClip healSound;
+
     private void Awake()
     {
         if(Instance != null && Instance != this) Destroy(gameObject);
@@ -88,6 +93,7 @@ public class HeroController : MonoBehaviour
             Rigidbody2D projectileInstance = Instantiate(projectilePrefab, transform.position, transform.rotation);
             if(movementDirection.magnitude == 0) projectileInstance.velocity = Vector2.down * projectileSpeed;
             else projectileInstance.velocity = movementDirection.normalized * projectileSpeed;
+            AudioSource.PlayClipAtPoint(shootSound, Camera.main.transform.position);
         }
     }
 
@@ -102,13 +108,23 @@ public class HeroController : MonoBehaviour
 
     private void TakeDamage(int damagePoints)
     {
+        AudioSource.PlayClipAtPoint(hurtSound, Camera.main.transform.position);
         lifePoints -= damagePoints;
         healthBarFill.fillAmount = (float) lifePoints / maxLifePoints;
         if(lifePoints <= 0)
         {
+            AudioSource.PlayClipAtPoint(deathSound, Camera.main.transform.position);
             gameOverText.SetActive(true);
             Time.timeScale = 0;
         }
+    }
+
+    private void Heal(int healingPoints)
+    {
+        lifePoints += healingPoints;
+        if(lifePoints > maxLifePoints) lifePoints = maxLifePoints;
+        AudioSource.PlayClipAtPoint(healSound, Camera.main.transform.position);
+        healthBarFill.fillAmount = (float) lifePoints / maxLifePoints;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -122,6 +138,11 @@ public class HeroController : MonoBehaviour
         if(tag.Equals("Enemy"))
         {
             TakeDamage(2);
+            Destroy(collision.gameObject);
+        }
+        if(collision.CompareTag("Health"))
+        {
+            Heal(collision.GetComponent<Healthpak>().healingAmount);
             Destroy(collision.gameObject);
         }
     }

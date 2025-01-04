@@ -16,6 +16,12 @@ public class EnemyController : MonoBehaviour
     private int lifePoints;
     [SerializeField]
     private Image healthBarFill;
+
+    [SerializeField] private AudioClip shootSound;
+    [SerializeField] private AudioClip hurtSound;
+
+    [SerializeField] private GameObject healthpakPrefab;
+
     enum MovementState
     {
         Up = 1,
@@ -56,6 +62,8 @@ public class EnemyController : MonoBehaviour
         Rigidbody2D projectileInstance = Instantiate(projectilePrefab, transform.position, transform.rotation);
         Vector2 distanceToPlayer = HeroController.Instance.transform.position - transform.position;
         projectileInstance.velocity = distanceToPlayer.normalized * projectileSpeed;
+        AudioSource.PlayClipAtPoint(shootSound, Camera.main.transform.position);
+
     }
 
     private void Movement()
@@ -98,8 +106,14 @@ public class EnemyController : MonoBehaviour
             Destroy(collision.gameObject);
 
             lifePoints--;
+            AudioSource.PlayClipAtPoint(hurtSound, Camera.main.transform.position);
+
             healthBarFill.fillAmount = (float) lifePoints / maxLifePoints;
-            if(lifePoints <= 0) Destroy(gameObject);
+            if(lifePoints <= 0)
+            {
+                if(Random.Range(0, 2) == 0) Instantiate(healthpakPrefab, transform.position, transform.rotation);
+                Destroy(gameObject);
+            }
         }
     }
 }

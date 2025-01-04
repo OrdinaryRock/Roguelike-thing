@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
             HeroController.Instance.gameObject.SetActive(true);
             HeroController.Instance.transform.position = (Vector2)transform.position;
             roomMap[activeCoordinates].roomInstance.GetComponent<DungeonRoom>().SetSpawnersActive(true);
+            roomMap[activeCoordinates].roomInstance.GetComponent<DungeonRoom>().CloseAllDoors();
         }
     }
     

@@ -65,7 +65,7 @@ public class DungeonRoom : MonoBehaviour
         foreach(Vector2 direction in roomConnections)
         {
             allDoors[direction].SetLocked(false);
-            /* if(roomType == RoomType.Start) */ allDoors[direction].SetOpen(true);
+            /* if(roomType == RoomType.Start) */ allDoors[direction].SetOpen(false);
             unlockedDoors.Add(direction, allDoors[direction]);
         }
     }
@@ -75,6 +75,22 @@ public class DungeonRoom : MonoBehaviour
         foreach(GameObject spawner in spawners)
         {
             spawner.SetActive(flag);
+        }
+    }
+
+    public void OpenAllDoors()
+    {
+        foreach(Vector2 direction in roomConnections)
+        {
+            allDoors[direction].SetOpen(true);
+        }
+    }
+
+    public void CloseAllDoors()
+    {
+        foreach(Vector2 direction in roomConnections)
+        {
+            allDoors[direction].SetOpen(false);
         }
     }
 }

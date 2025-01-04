@@ -14,6 +14,8 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField]
     private float spawnInterval = 2f;
 
+    private int enemyAmount = 5;
+
     // Start is called before the first frame update
     private void OnEnable()
     {
@@ -27,8 +29,17 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        Vector2 spawnPosition = (Vector2)transform.position + new Vector2(Random.Range(size.x/2, -size.x/2), Random.Range(size.y/2, -size.y/2));
-        Rigidbody2D enemyInstance = Instantiate(enemyPrefab, spawnPosition, transform.rotation);
+        if(enemyAmount > 0)
+        {
+            Vector2 spawnPosition = (Vector2) transform.position + new Vector2(Random.Range(size.x / 2, -size.x / 2), Random.Range(size.y / 2, -size.y / 2));
+            Rigidbody2D enemyInstance = Instantiate(enemyPrefab, spawnPosition, transform.rotation);
+            enemyAmount--;
+        }
+        else
+        {
+            CancelInvoke(nameof(SpawnEnemy));
+            transform.parent.GetComponent<DungeonRoom>().OpenAllDoors();
+        }
     }
 
     private void OnDrawGizmos()
